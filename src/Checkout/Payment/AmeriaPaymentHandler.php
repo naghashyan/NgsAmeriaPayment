@@ -4,6 +4,7 @@ namespace Ngs\AmeriaPayment\Checkout\Payment;
 
 use Ngs\AmeriaPayment\Api\Base\Exception\ApiException;
 use Ngs\AmeriaPayment\Components\PaymentManager;
+use Ngs\AmeriaPayment\Components\PluginConfig\PluginConfigStruct;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -74,6 +75,11 @@ class AmeriaPaymentHandler implements AsynchronousPaymentHandlerInterface
 
         $transactionId = $transaction->getOrderTransaction()->getId();
 
-        $this->transactionStateHandler->paid($transactionId, $salesChannelContext->getContext());
+        $pluginConfig = $this->paymentManager->getPluginConfig($salesChannelContext->getSalesChannelId());
+        if ($pluginConfig->freezePayments) {
+            $this->transactionStateHandler->authorize($transactionId, $salesChannelContext->getContext());
+        } else {
+            $this->transactionStateHandler->paid($transactionId, $salesChannelContext->getContext());
+        }
     }
 }
