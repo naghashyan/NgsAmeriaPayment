@@ -52,6 +52,11 @@ class PaymentManager
         $this->pluginConfigService = $pluginConfigService;
     }
 
+    public function getPluginConfig(string $salesChannelId): PluginConfigStruct
+    {
+        return new PluginConfigStruct($this->pluginConfigService, $salesChannelId);
+    }
+
     /**
      * Init payment and return external gateway url
      *
@@ -116,6 +121,18 @@ class PaymentManager
         }
 
         $this->orderTransactionEntityManager->setMdOrderIdCustomField($transaction->getOrderTransaction()->getId(), $responseObj->MDOrderID, $salesChannelContext->getContext());
+    }
+
+    public function capture(string $paymentId, float $amount, SalesChannelContext $salesChannelContext): void
+    {
+        $pluginConfig = new PluginConfigStruct($this->pluginConfigService, $salesChannelContext->getSalesChannelId());
+        $this->paymentBuilderManager->confirmPayment($pluginConfig, $paymentId, $amount);
+    }
+
+    public function cancel(string $paymentId, SalesChannelContext $salesChannelContext): void
+    {
+        $pluginConfig = new PluginConfigStruct($this->pluginConfigService, $salesChannelContext->getSalesChannelId());
+        $this->paymentBuilderManager->cancelPayment($pluginConfig, $paymentId);
     }
 
     /**

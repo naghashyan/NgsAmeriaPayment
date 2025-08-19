@@ -18,6 +18,35 @@
             <helpText lang="ru-RU">Включить тестовый режим</helpText>
         </input-field>
     </card>
+
+    <card>
+        <title>Payment options</title>
+        <title lang="ru-RU">Параметры оплаты</title>
+        <title lang="hy-AM">Վճարման կարգավորումներ</title>
+
+        <input-field type="bool">
+            <name>enableCardBinding</name>
+            <label>Enable card binding</label>
+            <label lang="hy-AM">Միացնել քարտի կցումը</label>
+            <label lang="ru-RU">Включить сохранение карт</label>
+            <defaultValue>false</defaultValue>
+            <helpText>Allow customers to bind cards for future payments</helpText>
+            <helpText lang="hy-AM">Թույլատրել հաճախորդներին կցել քարտերը հաջորդ վճարումների համար</helpText>
+            <helpText lang="ru-RU">Разрешить клиентам сохранять карты для будущих платежей</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>freezePayments</name>
+            <label>Enable payment freezing</label>
+            <label lang="hy-AM">Միացնել վճարման սառեցումը</label>
+            <label lang="ru-RU">Включить заморозку платежей</label>
+            <defaultValue>false</defaultValue>
+            <helpText>Authorize payments and capture after shipping</helpText>
+            <helpText lang="hy-AM">Ավտորիզացնել վճարումները և գանձել առաքումից հետո</helpText>
+            <helpText lang="ru-RU">Авторизовать платежи и списывать после отправки</helpText>
+        </input-field>
+    </card>
+
     <card>
         <title>Live API configurations</title>
         <title lang="ru-RU">Конфигурации Live API</title>
