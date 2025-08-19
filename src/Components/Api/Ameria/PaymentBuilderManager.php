@@ -7,9 +7,14 @@ use Monolog\Logger;
 use Ngs\AmeriaPayment\Api\Ameria\OrderResourceFactory;
 use Ngs\AmeriaPayment\Api\Ameria\Request\Struct\InitPayment;
 use Ngs\AmeriaPayment\Api\Ameria\Request\Struct\PaymentDetails;
+use Ngs\AmeriaPayment\Api\Ameria\Request\Struct\ConfirmPayment;
+use Ngs\AmeriaPayment\Api\Ameria\Request\Struct\CancelPayment;
+use Ngs\AmeriaPayment\Api\Ameria\Request\Struct\MakeBindingPayment;
 use Ngs\AmeriaPayment\Api\Ameria\Resource\OrderResource;
 use Ngs\AmeriaPayment\Api\Ameria\Response\Struct\InitPayment as InitPaymentResponse;
 use Ngs\AmeriaPayment\Api\Ameria\Response\Struct\PaymentDetails as PaymentDetailsResponse;
+use Ngs\AmeriaPayment\Api\Ameria\Response\Struct\OperationResponse;
+use Ngs\AmeriaPayment\Api\Ameria\Response\Struct\MakeBindingPayment as MakeBindingPaymentResponse;
 use Ngs\AmeriaPayment\Api\Base\Exception\ApiException;
 use Ngs\AmeriaPayment\Components\LanguageEntityManager;
 use Ngs\AmeriaPayment\Components\PluginConfig\PluginConfigStruct;
@@ -25,6 +30,7 @@ class PaymentBuilderManager
 {
     private const SUCCESS_CODE_INIT_PAYMENT = 1;
     private const SUCCESS_CODE_PAYMENT_DETAILS = '00';
+    private const SUCCESS_CODE_OPERATION = '00';
     private const ORDER_STATUS_APPROVED = 1;
     private const ORDER_STATUS_DEPOSITED = 2;
 
@@ -174,6 +180,106 @@ class PaymentBuilderManager
         $orderStatus = (int)$responseObj->OrderStatus;
 
         if ($orderStatus !== self::ORDER_STATUS_APPROVED && $orderStatus !== self::ORDER_STATUS_DEPOSITED) {
+            throw new ApiException((string)$responseObj->Description, 0, null, ['response' => $responseObj]);
+        }
+
+        return $responseObj;
+    }
+
+    public function confirmPayment(PluginConfigStruct $pluginConfig, string $paymentId, float $amount): void
+    {
+        $orderResource = $this->createOrderResource($pluginConfig->apiUri);
+
+        $request = new ConfirmPayment();
+        $request->Username = $pluginConfig->username;
+        $request->Password = $pluginConfig->password;
+        $request->PaymentID = $paymentId;
+        $request->Amount = $amount;
+
+        try {
+            $response = $orderResource->confirmPayment($request);
+        } catch (Throwable $ex) {
+            $apiException = $this->handleRequestException($ex);
+            $apiException->setRequest($request->cloneWithoutApiCredentials());
+            $this->logger->error('ConfirmPayment.', ['ex' => $apiException->toArray()]);
+            throw $apiException;
+        }
+
+        $responseJson = (string)$response->getBody();
+        $responseObj = OperationResponse::jsonToResponseStruct($responseJson);
+        $responseObj->addRequestToExtension($request->cloneWithoutApiCredentials());
+
+        if ($responseObj->ResponseCode !== self::SUCCESS_CODE_OPERATION) {
+            throw new ApiException((string)$responseObj->ResponseMessage, 0, null, ['response' => $responseObj]);
+        }
+    }
+
+    public function cancelPayment(PluginConfigStruct $pluginConfig, string $paymentId): void
+    {
+        $orderResource = $this->createOrderResource($pluginConfig->apiUri);
+
+        $request = new CancelPayment();
+        $request->Username = $pluginConfig->username;
+        $request->Password = $pluginConfig->password;
+        $request->PaymentID = $paymentId;
+
+        try {
+            $response = $orderResource->cancelPayment($request);
+        } catch (Throwable $ex) {
+            $apiException = $this->handleRequestException($ex);
+            $apiException->setRequest($request->cloneWithoutApiCredentials());
+            $this->logger->error('CancelPayment.', ['ex' => $apiException->toArray()]);
+            throw $apiException;
+        }
+
+        $responseJson = (string)$response->getBody();
+        $responseObj = OperationResponse::jsonToResponseStruct($responseJson);
+        $responseObj->addRequestToExtension($request->cloneWithoutApiCredentials());
+
+        if ($responseObj->ResponseCode !== self::SUCCESS_CODE_OPERATION) {
+            throw new ApiException((string)$responseObj->ResponseMessage, 0, null, ['response' => $responseObj]);
+        }
+    }
+
+    public function makeBindingPayment(AsyncPaymentTransactionStruct $transactionStruct, SalesChannelContext $salesChannelContext, PluginConfigStruct $pluginConfig, string $cardHolderId, string $returnUrl, int $orderId): MakeBindingPaymentResponse
+    {
+        $totalPrice = $transactionStruct->getOrderTransaction()->getAmount()->getTotalPrice();
+
+        if ($pluginConfig->testMode) {
+            $amount = 10;
+        } else {
+            $currencyFactor = $transactionStruct->getOrder()->getCurrencyFactor();
+            $amount = $totalPrice / $currencyFactor;
+        }
+
+        $requestStruct = new MakeBindingPayment();
+        $requestStruct->ClientID = $pluginConfig->clientId;
+        $requestStruct->Username = $pluginConfig->username;
+        $requestStruct->Password = $pluginConfig->password;
+        $requestStruct->CardHolderID = $cardHolderId;
+        $requestStruct->Amount = $amount;
+        $requestStruct->OrderID = $orderId;
+        $requestStruct->BackURL = $returnUrl;
+        $requestStruct->PaymentType = 6;
+        $requestStruct->Description = $pluginConfig->description;
+        $requestStruct->Currency = $this->getCurrency($salesChannelContext);
+
+        $orderResource = $this->createOrderResource($pluginConfig->apiUri);
+
+        try {
+            $response = $orderResource->makeBindingPayment($requestStruct);
+        } catch (Throwable $ex) {
+            $apiException = $this->handleRequestException($ex);
+            $apiException->setRequest($requestStruct->cloneWithoutApiCredentials());
+            $this->logger->error('MakeBindingPayment.', ['ex' => $apiException->toArray()]);
+            throw $apiException;
+        }
+
+        $responseJson = (string)$response->getBody();
+        $responseObj = MakeBindingPaymentResponse::jsonToResponseStruct($responseJson);
+        $responseObj->addRequestToExtension($requestStruct->cloneWithoutApiCredentials());
+
+        if ($responseObj->ResponseCode !== self::SUCCESS_CODE_PAYMENT_DETAILS) {
             throw new ApiException((string)$responseObj->Description, 0, null, ['response' => $responseObj]);
         }
 

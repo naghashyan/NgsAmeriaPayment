@@ -10,6 +10,8 @@ use Shopware\Core\Framework\Struct\Struct;
 class PluginConfigStruct extends Struct
 {
     public bool $testMode;
+    public bool $enableCardBinding;
+    public bool $freezePayments;
     public string $clientId;
     public string $username;
     public string $password;
@@ -24,6 +26,8 @@ class PluginConfigStruct extends Struct
     {
         $pluginConfig = $pluginConfigService->getAll($salesChannelId);
         $this->testMode = !empty($pluginConfig['testMode']);
+        $this->enableCardBinding = !empty($pluginConfig['enableCardBinding']);
+        $this->freezePayments = !empty($pluginConfig['freezePayments']);
 
         if ($this->testMode) {
             $this->clientId = $pluginConfig['testClientId'] ?? '';
