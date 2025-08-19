@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+        <title>API configurations</title>
+        <title lang="ru-RU">Конфигурации API</title>
+        <title lang="hy-AM">API կոնֆիգուրացիաներ</title>
+
+        <input-field type="bool">
+            <name>testMode</name>
+            <label>Enable test mode</label>
+            <label lang="hy-AM">Միացնել փորձարկման ռեժիմը</label>
+            <label lang="ru-RU">Включить тестовый режим</label>
+            <defaultValue>true</defaultValue>
+            <helpText>Enable test mode</helpText>
+            <helpText lang="hy-AM">Միացնել փորձարկման ռեժիմը</helpText>
+            <helpText lang="ru-RU">Включить тестовый режим</helpText>
+        </input-field>
+    </card>
+    <card>
+        <title>Live API configurations</title>
+        <title lang="ru-RU">Конфигурации Live API</title>
+        <title lang="hy-AM">Live API կոնֆիգուրացիաներ</title>
+        <input-field>
+            <name>clientId</name>
+            <label>Client Id</label>
+            <label lang="hy-AM">Առևտրային կետի նույնականացուցիչ</label>
+            <label lang="ru-RU">Идентификатор магазина</label>
+            <defaultValue></defaultValue>
+            <helpText>Client Id for the Ameriabank API</helpText>
+            <helpText lang="hy-AM">Ամերիաբանկի API-ին փոխանցվող առևտրային կետի նույնականացուցիչ</helpText>
+            <helpText lang="ru-RU">Идентификатор магазина для API Америабанка</helpText>
+        </input-field>
+        <input-field>
+            <name>username</name>
+            <label>Username</label>
+            <label lang="hy-AM">Մուտքանուն</label>
+            <label lang="ru-RU">Имя пользователя</label>
+            <defaultValue></defaultValue>
+            <helpText>Username for the Ameriabank API</helpText>
+            <helpText lang="hy-AM">Ամերիաբանկի API-ին փոխանցվող մուտքանուն</helpText>
+            <helpText lang="ru-RU">Имя пользователя для API Америабанка</helpText>
+        </input-field>
+        <input-field type="password">
+            <name>password</name>
+            <label>Password</label>
+            <label lang="hy-AM">Գաղտնաբառ</label>
+            <label lang="ru-RU">Пароль</label>
+            <defaultValue></defaultValue>
+            <helpText>Password for the Ameriabank API</helpText>
+            <helpText lang="hy-AM">Ամերիաբանկի API-ին փոխանցվող գաղտնաբառ</helpText>
+            <helpText lang="ru-RU">Пароль для API Америабанка</helpText>
+        </input-field>
+        <input-field>
+            <name>apiUri</name>
+            <label>Main URI</label>
+            <label lang="hy-AM">Հիմնական URI</label>
+            <label lang="ru-RU">Основной URI</label>
+            <defaultValue>https://services.ameriabank.am/VPOS</defaultValue>
+            <helpText>Main payment system address</helpText>
+            <helpText lang="hy-AM">Հիմնական վճարային համակարգի հասցե</helpText>
+            <helpText lang="ru-RU">Адрес основной платежной системы</helpText>
+        </input-field>
+        <input-field>
+            <name>description</name>
+            <label>Transaction description</label>
+            <label lang="hy-AM">Գործարքի նկարագիր</label>
+            <label lang="ru-RU">Описание транзакции</label>
+            <defaultValue></defaultValue>
+            <helpText>Transaction description</helpText>
+            <helpText lang="hy-AM">Գործարքի նկարագիր</helpText>
+            <helpText lang="ru-RU">Описание транзакции</helpText>
+        </input-field>
+    </card>
+    <card>
+        <title>Test API configurations</title>
+        <title lang="ru-RU">Конфигурации Test API</title>
+        <title lang="hy-AM">Test API կոնֆիգուրացիաներ</title>
+        <input-field>
+            <name>testClientId</name>
+            <label>Client Id</label>
+            <label lang="hy-AM">Առևտրային կետի նույնականացուցիչ</label>
+            <label lang="ru-RU">Идентификатор магазина</label>
+            <defaultValue></defaultValue>
+            <helpText>Client Id for the Ameriabank API</helpText>
+            <helpText lang="hy-AM">Ամերիաբանկի API-ին փոխանցվող առևտրային կետի նույնականացուցիչ</helpText>
+            <helpText lang="ru-RU">Идентификатор магазина для API Америабанка</helpText>
+        </input-field>
+        <input-field>
+            <name>testUsername</name>
+            <label>Username</label>
+            <label lang="hy-AM">Մուտքանուն</label>
+            <label lang="ru-RU">Имя пользователя</label>
+            <defaultValue></defaultValue>
+            <helpText>Username for the Ameriabank API</helpText>
+            <helpText lang="hy-AM">Ամերիաբանկի API-ին փոխանցվող մուտքանուն</helpText>
+            <helpText lang="ru-RU">Имя пользователя для API Америабанка</helpText>
+        </input-field>
+        <input-field type="password">
+            <name>testPassword</name>
+            <label>Password</label>
+            <label lang="hy-AM">Գաղտնաբառ</label>
+            <label lang="ru-RU">Пароль</label>
+            <defaultValue></defaultValue>
+            <helpText>Password for the Ameriabank API</helpText>
+            <helpText lang="hy-AM">Ամերիաբանկի API-ին փոխանցվող գաղտնաբառ</helpText>
+            <helpText lang="ru-RU">Пароль для API Америабанка</helpText>
+        </input-field>
+        <input-field>
+            <name>testApiUri</name>
+            <label>Main URI</label>
+            <label lang="hy-AM">Հիմնական URI</label>
+            <label lang="ru-RU">Основной URI</label>
+            <defaultValue>https://servicestest.ameriabank.am/VPOS</defaultValue>
+            <helpText>Main payment system address</helpText>
+            <helpText lang="hy-AM">Հիմնական վճարային համակարգի հասցե</helpText>
+            <helpText lang="ru-RU">Адрес основной платежной системы</helpText>
+        </input-field>
+        <input-field>
+            <name>testDescription</name>
+            <label>Transaction description</label>
+            <label lang="hy-AM">Գործարքի նկարագիր</label>
+            <label lang="ru-RU">Описание транзакции</label>
+            <defaultValue></defaultValue>
+            <helpText>Transaction description</helpText>
+            <helpText lang="hy-AM">Գործարքի նկարագիր</helpText>
+            <helpText lang="ru-RU">Описание транзакции</helpText>
+        </input-field>
+    </card>
+</config>

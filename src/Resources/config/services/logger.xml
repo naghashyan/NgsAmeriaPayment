@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- Register UidProcessor service -->
+        <service id="ngs_ameria_payment.logger.processor.uid" class="Monolog\Processor\UidProcessor"
+                 public="false"/>
+
+        <service id="ngs_ameria_payment.logger" class="Monolog\Logger">
+            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
+            <argument type="string">NgsAmeriaPayment</argument>
+            <call method="pushProcessor">
+                <argument type="service" id="ngs_ameria_payment.logger.processor.uid"/>
+            </call>
+        </service>
+    </services>
+</container>

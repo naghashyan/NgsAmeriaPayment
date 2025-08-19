@@ -1,0 +1,38 @@
+{
+  "name": "ngs/ameria-payment",
+  "description": "NGS Ameria payment",
+  "version": "1.0.0",
+  "type": "shopware-platform-plugin",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Naghashyan Solutions",
+      "homepage": "https://naghashyan.com"
+    }
+  ],
+  "require": {
+    "shopware/core": "~6.4"
+  },
+  "extra": {
+    "shopware-plugin-class": "Ngs\\AmeriaPayment\\NgsAmeriaPayment",
+    "copyright": "(c) Naghashyan Solutions",
+    "plugin-icon": "src/Resources/config/plugin.png",
+    "label": {
+      "de-DE": "NGS Ameria payment",
+      "en-GB": "NGS Ameria payment"
+    },
+    "description": {
+      "de-DE": "NGS Ameria payment",
+      "en-GB": "NGS Ameria payment"
+    },
+    "manufacturerLink": {
+      "de-DE": "https://naghashyan.com",
+      "en-GB": "https://naghashyan.com"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Ngs\\AmeriaPayment\\": "src/"
+    }
+  }
+}

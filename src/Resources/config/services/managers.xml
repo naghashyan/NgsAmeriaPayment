@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="Ngs\AmeriaPayment\Checkout\Payment\AmeriaPaymentHandler">
+            <argument id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"
+                      type="service"/>
+            <argument id="Ngs\AmeriaPayment\Components\PaymentManager" type="service"/>
+            <tag name="shopware.payment.method.async"/>
+        </service>
+
+        <service id="Ngs\AmeriaPayment\Components\PaymentManager">
+            <argument id="router" type="service"/>
+            <argument id="Ngs\AmeriaPayment\Components\SwPaymentTokenHashManager" type="service"/>
+            <argument id="Ngs\AmeriaPayment\Components\OrderTransactionEntityManager" type="service"/>
+            <argument id="Ngs\AmeriaPayment\Components\Api\Ameria\PaymentBuilderManager" type="service"/>
+            <argument id="Shopware\Core\System\NumberRange\ValueGenerator\NumberRangeValueGeneratorInterface"
+                      type="service"/>
+            <argument id="Ngs\AmeriaPayment\Components\PluginConfig\PluginConfigService" type="service"/>
+        </service>
+
+        <service id="Ngs\AmeriaPayment\Components\Api\Ameria\PaymentBuilderManager">
+            <argument id="Ngs\AmeriaPayment\Components\LanguageEntityManager" type="service"/>
+            <argument id="ngs_ameria_payment.logger" type="service"/>
+        </service>
+
+        <service id="Ngs\AmeriaPayment\Components\SwPaymentTokenHashManager">
+            <argument id="Doctrine\DBAL\Connection" type="service"/>
+        </service>
+
+        <service id="Ngs\AmeriaPayment\Components\LanguageEntityManager">
+            <argument id="language.repository" type="service"/>
+        </service>
+
+        <service id="Ngs\AmeriaPayment\Components\OrderTransactionEntityManager">
+            <argument id="order_transaction.repository" type="service"/>
+        </service>
+
+        <service id="Ngs\AmeriaPayment\Components\PluginConfig\PluginConfigService">
+            <argument id="Shopware\Core\System\SystemConfig\SystemConfigService" type="service"/>
+        </service>
+
+    </services>
+</container>
