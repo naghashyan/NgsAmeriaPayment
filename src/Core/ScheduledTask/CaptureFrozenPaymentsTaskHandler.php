@@ -16,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory;
 
+
 class CaptureFrozenPaymentsTaskHandler extends ScheduledTaskHandler
 {
     private EntityRepository $orderTransactionRepository;
