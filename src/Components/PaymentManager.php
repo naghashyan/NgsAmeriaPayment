@@ -9,6 +9,7 @@ use Ngs\AmeriaPayment\Components\Api\Ameria\PaymentBuilderManager;
 use Ngs\AmeriaPayment\Components\PluginConfig\PluginConfigService;
 use Ngs\AmeriaPayment\Components\PluginConfig\PluginConfigStruct;
 use Ngs\AmeriaPayment\Utils\ArrayUtil;
+use Monolog\Logger;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\System\NumberRange\ValueGenerator\NumberRangeValueGeneratorInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -26,6 +27,7 @@ class PaymentManager
     private PaymentBuilderManager $paymentBuilderManager;
     private NumberRangeValueGeneratorInterface $numberRangeValueGenerator;
     private PluginConfigService $pluginConfigService;
+    private Logger $logger;
 
     /**
      * @param RouterInterface $router
@@ -41,7 +43,8 @@ class PaymentManager
         OrderTransactionEntityManager $orderTransactionEntityManager,
         PaymentBuilderManager $paymentBuilderManager,
         NumberRangeValueGeneratorInterface $valueGenerator,
-        PluginConfigService $pluginConfigService
+        PluginConfigService $pluginConfigService,
+        Logger $logger
     )
     {
         $this->router = $router;
@@ -50,6 +53,7 @@ class PaymentManager
         $this->paymentBuilderManager = $paymentBuilderManager;
         $this->numberRangeValueGenerator = $valueGenerator;
         $this->pluginConfigService = $pluginConfigService;
+        $this->logger = $logger;
     }
 
     public function getPluginConfig(string $salesChannelId): PluginConfigStruct
@@ -74,6 +78,11 @@ class PaymentManager
         $returnUrl = $this->assembleReturnUrl($transaction->getReturnUrl());
         $orderId = (int)$this->numberRangeValueGenerator->getValue(PaymentBuilderManager::NUMBER_RANGE_TYPE, $salesChannelContext->getContext(), null, false);
 
+        $this->logger->info('Init payment started', [
+            'transactionId' => $transaction->getOrderTransaction()->getId(),
+            'orderId' => $orderId,
+        ]);
+
         try {
             $responseObj = $this->paymentBuilderManager->initPayment($transaction, $salesChannelContext, $pluginConfig, $returnUrl, $orderId);
         } catch (ApiException $ex) {
@@ -83,10 +92,21 @@ class PaymentManager
                 $this->orderTransactionEntityManager->setPaymentIdCustomField($transaction->getOrderTransaction()->getId(), $responseObj->PaymentID, $orderId, $salesChannelContext->getContext());
             }
 
+            $this->logger->error('Init payment failed', [
+                'transactionId' => $transaction->getOrderTransaction()->getId(),
+                'ex' => $ex->getMessage(),
+            ]);
+
             throw $ex;
         }
 
         $this->orderTransactionEntityManager->setPaymentIdCustomField($transaction->getOrderTransaction()->getId(), $responseObj->PaymentID, $orderId, $salesChannelContext->getContext());
+
+        $this->logger->info('Init payment succeeded', [
+            'transactionId' => $transaction->getOrderTransaction()->getId(),
+            'paymentId' => $responseObj->PaymentID,
+            'paymentUrl' => $responseObj->paymentURL,
+        ]);
 
         return $responseObj->paymentURL;
     }
@@ -108,6 +128,11 @@ class PaymentManager
 
         $pluginConfig = new PluginConfigStruct($this->pluginConfigService, $salesChannelContext->getSalesChannelId());
 
+        $this->logger->info('Finalize payment started', [
+            'transactionId' => $transaction->getOrderTransaction()->getId(),
+            'paymentId' => $paymentId,
+        ]);
+
         try {
             $responseObj = $this->paymentBuilderManager->getPaymentDetails($pluginConfig, $paymentId);
         } catch (ApiException $ex) {
@@ -117,22 +142,69 @@ class PaymentManager
                 $this->orderTransactionEntityManager->setMdOrderIdCustomField($transaction->getOrderTransaction()->getId(), $responseObj->MDOrderID, $salesChannelContext->getContext());
             }
 
+            $this->logger->error('Finalize payment failed', [
+                'transactionId' => $transaction->getOrderTransaction()->getId(),
+                'ex' => $ex->getMessage(),
+            ]);
+
             throw $ex;
         }
 
         $this->orderTransactionEntityManager->setMdOrderIdCustomField($transaction->getOrderTransaction()->getId(), $responseObj->MDOrderID, $salesChannelContext->getContext());
+
+        $this->logger->info('Finalize payment succeeded', [
+            'transactionId' => $transaction->getOrderTransaction()->getId(),
+            'mdOrderId' => $responseObj->MDOrderID,
+        ]);
     }
 
     public function capture(string $paymentId, float $amount, SalesChannelContext $salesChannelContext): void
     {
         $pluginConfig = new PluginConfigStruct($this->pluginConfigService, $salesChannelContext->getSalesChannelId());
-        $this->paymentBuilderManager->confirmPayment($pluginConfig, $paymentId, $amount);
+
+        $this->logger->info('Capture payment started', [
+            'paymentId' => $paymentId,
+            'amount' => $amount,
+        ]);
+
+        try {
+            $this->paymentBuilderManager->confirmPayment($pluginConfig, $paymentId, $amount);
+        } catch (ApiException $ex) {
+            $this->logger->error('Capture payment failed', [
+                'paymentId' => $paymentId,
+                'ex' => $ex->getMessage(),
+            ]);
+
+            throw $ex;
+        }
+
+        $this->logger->info('Capture payment succeeded', [
+            'paymentId' => $paymentId,
+        ]);
     }
 
     public function cancel(string $paymentId, SalesChannelContext $salesChannelContext): void
     {
         $pluginConfig = new PluginConfigStruct($this->pluginConfigService, $salesChannelContext->getSalesChannelId());
-        $this->paymentBuilderManager->cancelPayment($pluginConfig, $paymentId);
+
+        $this->logger->info('Cancel payment started', [
+            'paymentId' => $paymentId,
+        ]);
+
+        try {
+            $this->paymentBuilderManager->cancelPayment($pluginConfig, $paymentId);
+        } catch (ApiException $ex) {
+            $this->logger->error('Cancel payment failed', [
+                'paymentId' => $paymentId,
+                'ex' => $ex->getMessage(),
+            ]);
+
+            throw $ex;
+        }
+
+        $this->logger->info('Cancel payment succeeded', [
+            'paymentId' => $paymentId,
+        ]);
     }
 
     /**
