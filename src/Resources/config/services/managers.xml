@@ -9,6 +9,7 @@
             <argument id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"
                       type="service"/>
             <argument id="Ngs\AmeriaPayment\Components\PaymentManager" type="service"/>
+            <argument id="ngs_ameria_payment.logger" type="service"/>
             <tag name="shopware.payment.method.async"/>
         </service>
 
@@ -20,6 +21,7 @@
             <argument id="Shopware\Core\System\NumberRange\ValueGenerator\NumberRangeValueGeneratorInterface"
                       type="service"/>
             <argument id="Ngs\AmeriaPayment\Components\PluginConfig\PluginConfigService" type="service"/>
+            <argument id="ngs_ameria_payment.logger" type="service"/>
         </service>
 
         <service id="Ngs\AmeriaPayment\Components\Api\Ameria\PaymentBuilderManager">
