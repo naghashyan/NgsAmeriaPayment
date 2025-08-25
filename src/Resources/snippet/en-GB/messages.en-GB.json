@@ -1,0 +1,7 @@
+{
+    "ngs-payment-binding": {
+        "useSavedBinding": "Use saved card",
+        "useNewCard": "Use a new card",
+        "saveCard": "Save this card for next time"
+    }
+}
