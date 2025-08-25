@@ -1,0 +1,45 @@
+{% set hasBindings = bindings|length > 0 %}
+<div class="ngs-binding-section">
+    {% if hasBindings %}
+        <p class="fw-bold">{{ 'ngs-payment-binding.useSavedBinding'|trans }}</p>
+        {% for binding in bindings %}
+            <div class="form-check">
+                <input class="form-check-input ngs-binding-radio" type="radio" name="ngsBinding" id="ngs-binding-{{ binding.id }}" value="{{ binding.id }}">
+                <label class="form-check-label" for="ngs-binding-{{ binding.id }}">
+                    {{ binding.cardScheme }} **** {{ binding.maskedPan|slice(-4) }} ({{ binding.expiryMonth }}/{{ binding.expiryYear }})
+                    {% if binding.isDefault %}<span class="badge bg-primary">{{ 'general.default'|trans }}</span>{% endif %}
+                </label>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="form-check">
+        <input class="form-check-input ngs-binding-radio" type="radio" name="ngsBinding" id="ngs-binding-new" value="" {% if not hasBindings %}checked{% endif %}>
+        <label class="form-check-label" for="ngs-binding-new">{{ 'ngs-payment-binding.useNewCard'|trans }}</label>
+    </div>
+    <div class="form-check mt-2 ngs-save-card {% if hasBindings %}d-none{% endif %}">
+        <input class="form-check-input" type="checkbox" id="ngs-save-card">
+        <label class="form-check-label" for="ngs-save-card">{{ 'ngs-payment-binding.saveCard'|trans }}</label>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const radios = document.querySelectorAll('.ngs-binding-radio');
+        const saveCard = document.querySelector('.ngs-save-card');
+        radios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                if (this.value) {
+                    fetch('/store-api/ngs/payment-binding/select', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({bindingId: this.value})
+                    });
+                    saveCard.classList.add('d-none');
+                } else {
+                    fetch('/store-api/ngs/payment-binding/select', {method: 'DELETE'});
+                    saveCard.classList.remove('d-none');
+                }
+            });
+        });
+    });
+</script>

@@ -25,17 +25,6 @@
         <title lang="hy-AM">Վճարման կարգավորումներ</title>
 
         <input-field type="bool">
-            <name>enableCardBinding</name>
-            <label>Enable card binding</label>
-            <label lang="hy-AM">Միացնել քարտի կցումը</label>
-            <label lang="ru-RU">Включить сохранение карт</label>
-            <defaultValue>false</defaultValue>
-            <helpText>Allow customers to bind cards for future payments</helpText>
-            <helpText lang="hy-AM">Թույլատրել հաճախորդներին կցել քարտերը հաջորդ վճարումների համար</helpText>
-            <helpText lang="ru-RU">Разрешить клиентам сохранять карты для будущих платежей</helpText>
-        </input-field>
-
-        <input-field type="bool">
             <name>freezePayments</name>
             <label>Enable payment freezing</label>
             <label lang="hy-AM">Միացնել վճարման սառեցումը</label>
@@ -44,6 +33,78 @@
             <helpText>Authorize payments and capture after shipping</helpText>
             <helpText lang="hy-AM">Ավտորիզացնել վճարումները և գանձել առաքումից հետո</helpText>
             <helpText lang="ru-RU">Авторизовать платежи и списывать после отправки</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>enableBindings</name>
+            <label>Enable saved payment bindings</label>
+            <label lang="hy-AM">Միացնել պահված վճարման կապերը</label>
+            <label lang="ru-RU">Включить сохраненные способы оплаты</label>
+            <defaultValue>true</defaultValue>
+            <helpText>Allow customers to reuse saved payment bindings</helpText>
+            <helpText lang="hy-AM">Թույլատրել հաճախորդներին օգտագործել պահված կապերը</helpText>
+            <helpText lang="ru-RU">Разрешить клиентам использовать сохраненные способы оплаты</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>showSaveCardCheckbox</name>
+            <label>Show "Save this card" checkbox</label>
+            <label lang="hy-AM">Ցուցադրել «Պահպանել այս քարտը» վանդակը</label>
+            <label lang="ru-RU">Показывать флажок «Сохранить эту карту»</label>
+            <defaultValue>true</defaultValue>
+            <helpText>Display checkbox during checkout to save card</helpText>
+            <helpText lang="hy-AM">Ցուցադրել վանդակը՝ քարտը պահելու համար</helpText>
+            <helpText lang="ru-RU">Отображать флажок при оформлении заказа для сохранения карты</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>allowMultipleBindings</name>
+            <label>Allow multiple bindings per customer</label>
+            <label lang="hy-AM">Թույլատրել մեկից ավելի կապեր յուրաքանչյուր հաճախորդի համար</label>
+            <label lang="ru-RU">Разрешить несколько связок для клиента</label>
+            <defaultValue>true</defaultValue>
+            <helpText>Permit storing more than one binding</helpText>
+            <helpText lang="hy-AM">Թույլատրել պահել մեկից ավելի կապ</helpText>
+            <helpText lang="ru-RU">Разрешить сохранять более одной связки</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>bindingPerSalesChannel</name>
+            <label>Bind per sales channel</label>
+            <label lang="hy-AM">Կապել վաճառքի յուրաքանչյուր ալիքով</label>
+            <label lang="ru-RU">Связывать по каналу продаж</label>
+            <defaultValue>false</defaultValue>
+            <helpText>Restrict bindings to originating sales channel</helpText>
+            <helpText lang="hy-AM">Սահմանափակել կապերը ըստ սկզբնական վաճառքի ալիքի</helpText>
+            <helpText lang="ru-RU">Ограничить связки исходным каналом продаж</helpText>
+        </input-field>
+
+        <input-field type="select">
+            <name>defaultBindingBehavior</name>
+            <label>Default binding selection</label>
+            <label lang="hy-AM">Կապի կանխադրված ընտրություն</label>
+            <label lang="ru-RU">Выбор связки по умолчанию</label>
+            <defaultValue>none</defaultValue>
+            <options>
+                <option value="none">
+                <label>None</label>
+                <label lang="hy-AM">Չկա</label>
+                <label lang="ru-RU">Нет</label>
+            </option>
+                <option value="first">
+                <label>First saved</label>
+                <label lang="hy-AM">Առաջին պահվածը</label>
+                <label lang="ru-RU">Первая сохраненная</label>
+            </option>
+                <option value="mostRecent">
+                <label>Most recent</label>
+                <label lang="hy-AM">Վերջինը</label>
+                <label lang="ru-RU">Последняя</label>
+            </option>
+            </options>
+            <helpText>Automatic selection when no binding chosen</helpText>
+            <helpText lang="hy-AM">Ավտոմատ ընտրություն, երբ կապը չի ընտրվել</helpText>
+            <helpText lang="ru-RU">Автоматический выбор, если связка не выбрана</helpText>
         </input-field>
     </card>
 

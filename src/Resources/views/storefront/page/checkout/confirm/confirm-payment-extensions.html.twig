@@ -1,0 +1,6 @@
+{% sw_extends '@Storefront/storefront/page/checkout/confirm/confirm-payment.html.twig' %}
+
+{% block page_checkout_confirm_payment_method_content %}
+    {{ parent() }}
+    {% sw_include '@NgsAmeriaPayment/storefront/component/payment/binding-list.html.twig' with { bindings: page.extensions.ngsPaymentBindings|default([]) } %}
+{% endblock %}
