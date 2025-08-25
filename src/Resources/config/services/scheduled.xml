@@ -8,6 +8,8 @@
             <argument type="service" id="scheduled_task.repository"/>
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="Ngs\AmeriaPayment\Components\PaymentManager"/>
+            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
+            <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory"/>
             <tag name="messenger.message_handler"/>
         </service>
     </services>
